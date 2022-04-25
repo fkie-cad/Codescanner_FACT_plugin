@@ -4,14 +4,14 @@ import logging
 from pathlib import Path
 
 try:
-    from helperFunctions.install import OperateInDirectory, is_virtualenv, run_cmd_with_logging
+    from helperFunctions.install import OperateInDirectory, is_virtualenv, run_cmd_with_logging, check_distribution
     from plugins.installer import AbstractPluginInstaller
 except ImportError:
     import sys
     SRC_PATH = Path(__file__).absolute().parent.parent.parent.parent
     sys.path.append(str(SRC_PATH))
 
-    from helperFunctions.install import OperateInDirectory, is_virtualenv, run_cmd_with_logging
+    from helperFunctions.install import OperateInDirectory, is_virtualenv, run_cmd_with_logging, check_distribution
     from plugins.installer import AbstractPluginInstaller
 
 
@@ -19,16 +19,16 @@ class CodescannerInstaller(AbstractPluginInstaller):
     base_path = Path(__file__).resolve().parent
 
     def build(self):
-        build_dir = self.base_path / 'build'
+        build_dir = self.base_path / 'build' / 'Codescanner'
         run_cmd_with_logging(
-            f'git clone https://github.com/fkie-cad/Codescanner.git -o {build_dir}',
-            shell=True, check=True
+            f'git clone https://github.com/fkie-cad/Codescanner.git -o Codescanner', raise_error=True
         )
         with OperateInDirectory(build_dir, remove=True):
             command = 'python3 setup.py install'
             if not is_virtualenv():
+                logging.warning("no venv")
                 command = f'sudo -EH {command}'
-            run_cmd_with_logging(command, shell=True, check=True)
+            run_cmd_with_logging(command)
 
 
 # Alias for generic use
