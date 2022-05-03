@@ -22,15 +22,21 @@ class PluginRoutes(ComponentBase):
     @roles_accepted(*PRIVILEGES['view_analysis'])
     def _get_byte_plot(self, uid):
         binary = CodescannerAnalysisData(self.fso.generate_path_from_uid(uid))
-        image = binary.plot_to_buffer(dpi=100, plot_type=binary.BYTE_PLOT)
-        encoded_img = b64encode(image).decode()
-        template_str = f'<img style="max-width:100%;" src="data:image/png;base64,{encoded_img}" width="1024px" />'
-        return render_template_string(template_str)
+        return self._render_plot(binary, binary.BYTE_PLOT)
 
     @roles_accepted(*PRIVILEGES['view_analysis'])
     def _get_color_map(self, uid):
         binary = CodescannerAnalysisData(self.fso.generate_path_from_uid(uid))
-        image = binary.plot_to_buffer(dpi=100, plot_type=binary.COLOR_MAP)
-        encoded_img = b64encode(image).decode()
-        template_str = f'<img style="max-width:100%;" src="data:image/png;base64,{encoded_img}" width="1024px" />'
+        return self._render_plot(binary, binary.COLOR_MAP)
+
+    @staticmethod
+    def _render_plot(binary: CodescannerAnalysisData, plot_type: int) -> str:
+        try:
+            image = binary.plot_to_buffer(dpi=100, plot_type=plot_type)
+            image_src = f'data:image/png;base64,{b64encode(image).decode()}'
+            alt_text = 'color map' if plot_type == binary.COLOR_MAP else 'byte plot'
+        except IOError as err:
+            image_src = ''
+            alt_text = f'Error: {str(err)}'
+        template_str = f'<img style="max-width:100%;" src="{image_src}" width="1024px" alt="{alt_text}" />'
         return render_template_string(template_str)

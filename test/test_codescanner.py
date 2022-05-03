@@ -18,6 +18,7 @@ class TestAnalysisPluginCryptoHints(AnalysisPluginTest):
         for test_file, expected_result in [
             ('amd64.elf', 'Intel-64'),
             ('arm.elf', 'Arm-32-le'),
+            ('hidden_arm.bin', 'Arm-32-le'),
         ]:
             test_fo = FileObject(file_path=str(TEST_DATA_DIR / test_file))
             processed_file = self.analysis_plugin.process_object(test_fo)
