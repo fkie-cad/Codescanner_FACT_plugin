@@ -14,6 +14,9 @@
         function show_color_map() {
             load_map("color_map");
         };
+        function show_coma_plot() {
+            load_map("coma_plot");
+        };
         function load_map(type) {
             $.ajax({
                 url: `/plugins/codescanner/${type}/{{ uid }}`,
@@ -77,7 +80,7 @@
                                 {% set start_offset, end_offset = region %}
                                 <tr>
                                     <td>{{ format_number(start_offset) }}</td>
-                                    <td>{{ format_number(end_offset) }})</td>
+                                    <td>{{ format_number(end_offset) }}</td>
                                 </tr>
                             {% endif %}
                         {%- endfor %}
@@ -86,16 +89,53 @@
             </td>
         </tr>
     {% endfor %}
+
+    {# Header Comparison (COMA) #}
+    <tr>
+        <td>Header Comparison</td>
+        {% if not analysis.get('comparison', {}).get('header') %}
+            <td>No header information found</td>
+        {% else %}
+            <td>
+                <table class="table table-sm m-0 no-border" style="width: 100%">
+                    <tr>
+                        <th>Section</th>
+                        <th>Start Offset</th>
+                        <th>End Offset</th>
+                    </tr>
+                    {% for section, regions in analysis.comparison.header.items() %}
+                        {% for start_offset, end_offset in regions %}
+                            <tr>
+                                <td>{{ section }}</td>
+                                <td>{{ format_number(start_offset) }}</td>
+                                <td>{{ format_number(end_offset) }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% endfor %}
+                </table>
+            </td>
+        {% endif %}
+    </tr>
+
+    {# Plots #}
+    <tr>
+        <td>Color Map</td>
+        <td id="color_map_cell">
+            <button class="btn btn-primary btn-sm" onclick="show_color_map();">Load</button>
+        </td>
+    </tr>
+
     <tr>
         <td>Byte Plot</td>
         <td id="byte_plot_cell">
             <button class="btn btn-primary btn-sm" onclick="show_byte_plot();">Load</button>
         </td>
     </tr>
+
     <tr>
-        <td>Color Map</td>
-        <td id="color_map_cell">
-            <button class="btn btn-primary btn-sm" onclick="show_color_map();">Load</button>
+        <td>Header Comparison Plot</td>
+        <td id="coma_plot_cell">
+            <button class="btn btn-primary btn-sm" onclick="show_coma_plot();">Load</button>
         </td>
     </tr>
 {% endblock %}

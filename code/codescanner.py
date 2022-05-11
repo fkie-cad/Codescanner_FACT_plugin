@@ -1,4 +1,4 @@
-from codescanner_analysis import CodescannerAnalysisData
+from codescanner_analysis import CodescannerAnalysisData, ComparisonAnalysis
 
 from analysis.PluginBase import AnalysisBasePlugin
 from objects.file import FileObject
@@ -16,6 +16,7 @@ class AnalysisPlugin(AnalysisBasePlugin):
 
     def process_object(self, file_object: FileObject) -> FileObject:
         binary = CodescannerAnalysisData(file_object.file_path)
+        comparison = ComparisonAnalysis(file_object.file_path)
         result = {}
 
         for key in ['Full', 'ISA', 'Bitness', 'Endianess']:
@@ -31,7 +32,13 @@ class AnalysisPlugin(AnalysisBasePlugin):
                 }
             })
 
-        if result['architecture']['Full'] is not None:
+        result['comparison'] = {
+            'codescanner': comparison.cs_regions,
+            'header': comparison.x_regions,
+        }
+
+        arch = result['architecture']['Full']
+        if arch is not None:
             result['summary'] = [result['architecture']['Full']]
         file_object.processed_analysis[self.NAME] = result
         return file_object
