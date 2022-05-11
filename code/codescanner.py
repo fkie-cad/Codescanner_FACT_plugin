@@ -1,6 +1,7 @@
 from codescanner_analysis import CodescannerAnalysisData, ComparisonAnalysis
 
 from analysis.PluginBase import AnalysisBasePlugin
+from helperFunctions.tag import TagColor
 from objects.file import FileObject
 from plugins.mime_blacklists import MIME_BLACKLIST_COMPRESSED, MIME_BLACKLIST_NON_EXECUTABLE
 
@@ -41,4 +42,17 @@ class AnalysisPlugin(AnalysisBasePlugin):
         if arch is not None:
             result['summary'] = [result['architecture']['Full']]
         file_object.processed_analysis[self.NAME] = result
+
+        if arch and file_object.processed_analysis.get('file_type', {}).get('full') == 'data':
+            self._add_raw_binary_tag(file_object)
+
         return file_object
+
+    def _add_raw_binary_tag(self, file_object):
+        self.add_analysis_tag(
+            file_object=file_object,
+            tag_name='probably_raw_binary',
+            value='Raw Binary',
+            color=TagColor.LIGHT_BLUE,
+            propagate=False
+        )
