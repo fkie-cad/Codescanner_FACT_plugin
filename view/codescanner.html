@@ -71,7 +71,7 @@
                                 {% set start_offset, end_offset, arch, bitness, endianness = region %}
                                 <tr>
                                     <td>{{ format_number(start_offset) }}</td>
-                                    <td>{{ format_number(end_offset) }})</td>
+                                    <td>{{ format_number(end_offset) }}</td>
                                     <td>{{ arch }}</td>
                                     <td>{{ bitness }}</td>
                                     <td>{{ "little" if endianness == 1 else "big" }}</td>
