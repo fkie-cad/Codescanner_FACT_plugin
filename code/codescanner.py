@@ -10,7 +10,7 @@ class AnalysisPlugin(AnalysisBasePlugin):
 
     NAME = 'codescanner'
     DESCRIPTION = 'scan unknown binaries for executable code'
-    VERSION = '1.0.0'
+    VERSION = '1.0.1'
     DEPENDENCIES = ['file_type']
     MIME_BLACKLIST = MIME_BLACKLIST_NON_EXECUTABLE + MIME_BLACKLIST_COMPRESSED
     FILE = __file__
@@ -38,12 +38,12 @@ class AnalysisPlugin(AnalysisBasePlugin):
             'header': comparison.x_regions,
         }
 
+        file_object.processed_analysis[self.NAME] = {'result': result}
         arch = result['architecture']['Full']
         if arch is not None:
-            result['summary'] = [result['architecture']['Full']]
-        file_object.processed_analysis[self.NAME] = result
+            file_object.processed_analysis[self.NAME]['summary'] = [result['architecture']['Full']]
 
-        if arch and file_object.processed_analysis.get('file_type', {}).get('full') == 'data':
+        if arch and file_object.processed_analysis.get('file_type', {}).get('result', {}).get('full') == 'data':
             self._add_raw_binary_tag(file_object)
 
         return file_object
