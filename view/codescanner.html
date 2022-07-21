@@ -37,7 +37,7 @@
         }
     </style>
 
-    {% set analysis = firmware.processed_analysis[selected_analysis] %}
+    {% set analysis = firmware.processed_analysis[selected_analysis]['result'] %}
 
     {% for key, value in analysis.architecture.items() %}
         <tr>
