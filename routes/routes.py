@@ -17,7 +17,7 @@ class PluginRoutes(ComponentBase):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fso = FSOrganizer(self._config)
+        self.fso = FSOrganizer()
 
     def _init_component(self):
         self._app.add_url_rule('/plugins/codescanner/byte_plot/<uid>', 'plugins/codescanner/byte_plot/<uid>', self._get_byte_plot)
