@@ -37,9 +37,7 @@
         }
     </style>
 
-    {% set analysis = firmware.processed_analysis[selected_analysis] %}
-
-    {% for key, value in analysis.architecture.items() %}
+    {% for key, value in analysis_result.architecture.items() %}
         <tr>
             <td>{{ key }}</td>
             <td>{{ value }}</td>
@@ -47,9 +45,9 @@
     {% endfor %}
         <tr>
             <td>File Size</td>
-            <td>{{ format_number(analysis.file_size) }}</td>
+            <td>{{ format_number(analysis_result.file_size) }}</td>
         </tr>
-    {% for key, value in analysis.sections.items() %}
+    {% for key, value in analysis_result.sections.items() %}
         <tr>
             <td>{{ key }} Regions</td>
             <td>
@@ -93,7 +91,7 @@
     {# Header Comparison (COMA) #}
     <tr>
         <td>Header Comparison</td>
-        {% if not analysis.get('comparison', {}).get('header') %}
+        {% if not analysis_result.get('comparison', {}).get('header') %}
             <td>No header information found</td>
         {% else %}
             <td>
@@ -103,7 +101,7 @@
                         <th>Start Offset</th>
                         <th>End Offset</th>
                     </tr>
-                    {% for section, regions in analysis.comparison.header.items() %}
+                    {% for section, regions in analysis_result.comparison.header.items() %}
                         {% for start_offset, end_offset in regions %}
                             <tr>
                                 <td>{{ section }}</td>

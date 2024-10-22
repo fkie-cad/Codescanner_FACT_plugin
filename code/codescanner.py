@@ -10,8 +10,8 @@ class AnalysisPlugin(AnalysisBasePlugin):
 
     NAME = 'codescanner'
     DESCRIPTION = 'scan unknown binaries for executable code'
-    VERSION = '1.0.0'
-    DEPENDENCIES = ['file_type']
+    VERSION = '1.0.1'
+    DEPENDENCIES = ('file_type',)
     MIME_BLACKLIST = MIME_BLACKLIST_NON_EXECUTABLE + MIME_BLACKLIST_COMPRESSED
     FILE = __file__
 
